@@ -184,17 +184,36 @@
   .btn-header.accent { background: var(--accent); border-color: var(--accent); color: var(--paper); }
   .btn-header.accent:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
 
+  /* ── KPI STRIP ── */
   .masthead-sub {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     padding: 8px 0 0;
   }
   .masthead-kpi {
     text-align: center;
     padding: 10px 16px 12px;
     border-right: 1px solid var(--rule);
+    position: relative;
   }
   .masthead-kpi:last-child { border-right: none; }
+
+  /* Total balance gets a subtle highlight to distinguish it */
+  .masthead-kpi.kpi-total {
+    background: linear-gradient(180deg, transparent 0%, rgba(200,192,176,0.10) 100%);
+  }
+  html.dark .masthead-kpi.kpi-total {
+    background: linear-gradient(180deg, transparent 0%, rgba(58,53,48,0.25) 100%);
+  }
+  .masthead-kpi.kpi-total::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--ink);
+    opacity: .18;
+  }
+
   .kpi-label {
     font-family: 'DM Mono', monospace;
     font-size: 9px;
@@ -203,6 +222,28 @@
     color: var(--muted);
     display: block;
     margin-bottom: 4px;
+  }
+  /* Small "total" badge */
+  .kpi-label-total {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 4px;
+  }
+  .kpi-badge {
+    font-size: 7px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border: 1px solid var(--rule);
+    padding: 1px 4px;
+    color: var(--muted);
+    opacity: .8;
   }
   .kpi-value {
     font-family: 'Playfair Display', serif;
@@ -381,7 +422,6 @@
   /* ── TRANSACTIONS TABLE ── */
   .transactions-list { display: flex; flex-direction: column; }
 
-  /* Desktop table header */
   .tx-header {
     display: grid;
     grid-template-columns: 80px 1fr 130px 100px 110px 32px;
@@ -398,7 +438,6 @@
   }
   .tx-header span.col-amount { text-align: right; }
 
-  /* Desktop row */
   .tx-row {
     display: grid;
     grid-template-columns: 80px 1fr 130px 100px 110px 32px;
@@ -473,7 +512,6 @@
   .btn-icon:hover { border-color: var(--accent); color: var(--accent); }
 
   /* ── MOBILE CARD LAYOUT ── */
-  /* Hidden by default, shown on mobile */
   .tx-card { display: none; }
 
   .empty-state {
@@ -613,13 +651,11 @@
      RESPONSIVE BREAKPOINTS
   ════════════════════════════════════════ */
 
-  /* ── Tablet: 861px–1024px ── */
   @media (max-width: 1024px) {
     .layout { grid-template-columns: 1fr 300px; gap: 24px; }
     .container { padding: 28px 28px 60px; }
   }
 
-  /* ── Small tablet / large phone: ≤860px ── */
   @media (max-width: 860px) {
     header { padding: 0 20px; }
     .container { padding: 20px 16px 60px; }
@@ -628,10 +664,16 @@
     .masthead-logo { font-size: 40px; }
     .issue-info { display: none; }
 
+    /* 4-column KPI strip collapses to 2×2 on tablet */
+    .masthead-sub { grid-template-columns: 1fr 1fr; }
+    .masthead-kpi { border-right: none; border-bottom: 1px solid var(--rule); }
+    .masthead-kpi:nth-child(odd) { border-right: 1px solid var(--rule); }
+    .masthead-kpi:nth-child(3),
+    .masthead-kpi:nth-child(4) { border-bottom: none; }
+
     .form-card { padding: 20px; box-shadow: 3px 3px 0 var(--ink); }
     .form-grid { grid-template-columns: 1fr 1fr; }
 
-    /* Switch to card layout for transactions */
     .tx-header { display: none; }
     .tx-row { display: none; }
     .tx-card {
@@ -681,7 +723,6 @@
       color: var(--muted);
     }
 
-    /* Sidebar becomes horizontal scrollable strip on mobile */
     .sidebar { flex-direction: row; overflow-x: auto; gap: 16px; padding-bottom: 4px; }
     .sidebar-card { min-width: 260px; flex-shrink: 0; box-shadow: 2px 2px 0 var(--ink); }
 
@@ -689,7 +730,6 @@
     .modal { padding: 24px; }
   }
 
-  /* ── Phone: ≤540px ── */
   @media (max-width: 540px) {
     header { padding: 0 14px; }
     .container { padding: 16px 14px 60px; }
@@ -698,17 +738,18 @@
     .masthead-top { padding: 10px 0 8px; }
     .btn-header { padding: 6px 10px; font-size: 9px; }
 
-    /* Stack KPIs vertically */
+    /* 2×2 on phone */
     .masthead-sub { grid-template-columns: 1fr 1fr; }
     .masthead-kpi { padding: 8px 10px 10px; }
-    .masthead-kpi:nth-child(2) { border-right: none; }
-    .masthead-kpi:last-child {
+    .masthead-kpi.kpi-total {
       grid-column: 1 / -1;
+      border-right: none !important;
       border-top: 1px solid var(--rule);
-      border-right: none;
+      border-bottom: none !important;
     }
     .kpi-value { font-size: 20px; }
     .kpi-label { font-size: 8px; }
+    .kpi-label-total { font-size: 8px; }
 
     .form-card { padding: 16px; }
     .form-grid { grid-template-columns: 1fr; gap: 12px; }
@@ -720,11 +761,9 @@
 
     .month-label { font-size: 17px; }
 
-    /* Compact card on small phones */
     .tx-card-name { font-size: 14px; }
     .tx-card-amount { font-size: 16px; }
 
-    /* Sidebar full width stacked */
     .sidebar { flex-direction: column; overflow-x: visible; }
     .sidebar-card { min-width: unset; }
 
@@ -736,7 +775,6 @@
     .form-row-actions .btn-secondary { flex: 1; text-align: center; }
   }
 
-  /* ── Very small: ≤380px ── */
   @media (max-width: 380px) {
     .masthead-logo { font-size: 26px; }
     .btn-header { padding: 5px 8px; letter-spacing: 0; }
@@ -771,8 +809,15 @@
       <span class="kpi-value negative" id="kpiExpenses">$0</span>
     </div>
     <div class="masthead-kpi">
-      <span class="kpi-label">Balance neto</span>
+      <span class="kpi-label">Balance del mes</span>
       <span class="kpi-value" id="kpiBalance">$0</span>
+    </div>
+    <div class="masthead-kpi kpi-total">
+      <span class="kpi-label-total">
+        Balance total
+        <span class="kpi-badge">acumulado</span>
+      </span>
+      <span class="kpi-value" id="kpiTotalBalance">$0</span>
     </div>
   </div>
 </header>
@@ -850,7 +895,6 @@
 
       <!-- LIST -->
       <div class="transactions-list">
-        <!-- Desktop header (hidden on mobile via CSS) -->
         <div class="tx-header">
           <span>Fecha</span>
           <span>Descripción</span>
@@ -1058,6 +1102,7 @@ function updateMonthLabel() {
 }
 
 function updateKPIs() {
+  // ── Balance del mes actual ──
   const monthTx  = transactions.filter(txInCurrentMonth);
   const income   = monthTx.filter(t => t.type === 'ingreso').reduce((s,t) => s+t.amount, 0);
   const expenses = monthTx.filter(t => t.type === 'gasto').reduce((s,t) => s+t.amount, 0);
@@ -1068,6 +1113,15 @@ function updateKPIs() {
   const balEl = document.getElementById('kpiBalance');
   balEl.textContent = fmt(balance);
   balEl.className = 'kpi-value ' + (balance >= 0 ? 'positive' : 'negative');
+
+  // ── Balance total acumulado (todos los movimientos) ──
+  const totalIncome   = transactions.filter(t => t.type === 'ingreso').reduce((s,t) => s+t.amount, 0);
+  const totalExpenses = transactions.filter(t => t.type === 'gasto').reduce((s,t) => s+t.amount, 0);
+  const totalBalance  = totalIncome - totalExpenses;
+
+  const totalEl = document.getElementById('kpiTotalBalance');
+  totalEl.textContent = fmt(totalBalance);
+  totalEl.className = 'kpi-value ' + (totalBalance >= 0 ? 'positive' : 'negative');
 }
 
 /* ─── DETECT MOBILE ─── */
@@ -1092,7 +1146,6 @@ function renderList() {
   }
 
   if (isMobile()) {
-    // Card layout for mobile
     container.innerHTML = filtered.map(t => {
       const c = CATS[t.cat] || CATS.otro;
       const sign = t.type === 'gasto' ? '-' : '+';
@@ -1120,7 +1173,6 @@ function renderList() {
       </div>`;
     }).join('');
   } else {
-    // Desktop table layout
     container.innerHTML = filtered.map(t => {
       const c = CATS[t.cat] || CATS.otro;
       const sign = t.type === 'gasto' ? '-' : '+';
@@ -1144,7 +1196,6 @@ function renderList() {
   }
 }
 
-// Re-render list on resize to switch between card/table
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
